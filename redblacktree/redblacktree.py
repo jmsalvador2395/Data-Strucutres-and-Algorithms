@@ -14,8 +14,6 @@ class RedBlackTree:
 		if(vertex is None):
 			return
 
-		s=s+vertex.color+str(vertex.key)
-
 		#left subtree 
 		s=s+'('
 		if(vertex.left is not None):
@@ -31,7 +29,11 @@ class RedBlackTree:
 		return s
 
 	def __str__(self):
-		return self._to_string(self.root, s='')
+		if(self.root is None):
+			return 'empty'
+		s=self.root.color+str(self.root.key)
+		return self._to_string(self.root, s)
+
 	#insert generic binary tree insert
 	def _insert(self, z):
 		y=None						#parent of current point
