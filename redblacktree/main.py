@@ -9,6 +9,5 @@ def main():
 		rbt.rb_insert(i)
 		print rbt
 	
-	rbt
 if __name__ == '__main__':
 	main()

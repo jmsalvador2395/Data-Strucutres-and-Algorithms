@@ -10,29 +10,44 @@ class RedBlackTree:
 	def __init__(self):		
 		self.root=None
 
+	def __str__(self):
+
+		'''
+		if(self.root is None):
+			return 'tree is empty'
+		return self._to_string(self.root, s='')
+		'''
+		x=self.root
+		if(self.root is not None):
+			print 'root '+str(self.root.key)
+			x=self.root.left
+			while(x is not None):
+				print 'left '+str(x.key)
+				x=x.left
+			x=self.root.right
+			while(x is not None):
+				print 'right '+str(x.key)
+				x=x.right
+
+		return 'done\n'
 	def _to_string(self, vertex, s):
 		if(vertex is None):
 			return
-
+		
+		s=s+vertex.color+str(vertex.key)
 		#left subtree 
 		s=s+'('
 		if(vertex.left is not None):
-			s=s+vertex.color+self._to_string(vertex.left, s)
+			s=s+self._to_string(vertex.left, s)
 		s=s+')'
 
 		#right subtree
 		s=s+'{'
 		if(vertex.right is not None):
-			s=s+vertex.color+self._to_string(vertex.right, s)
+			s=s+self._to_string(vertex.right, s)
 		s=s+'}'
 
 		return s
-
-	def __str__(self):
-		if(self.root is None):
-			return 'empty'
-		s=self.root.color+str(self.root.key)
-		return self._to_string(self.root, s)
 
 	#insert generic binary tree insert
 	def _insert(self, z):
@@ -41,29 +56,34 @@ class RedBlackTree:
 		while (x is not None):		#loop until point of insertion is found
 			y=x
 			if(z.key<x.key):
+				print 'down and left'
 				x=x.left
 			else:
+				print 'down and right'
 				x=x.right
 		z.p=y
 		if(y is None):				#y is only none when the tree is empty
 			self.root=z
+			return self.root
 		elif(z.key<y.key):
 			y.left=z
+			return y.left
 		else:
 			y.right=z
-		return
+			return y.right
 		
 	#in the middle of implementing
 	def rb_insert(self, key):
 		x=RedBlackTree._vertex()
 		x.key=key
-		self._insert(x)
+		x=self._insert(x)
 		x.color='r'
 		while((x.key != self.root.key) and (x.p.color=='r')):
+			print 'gets into the while loop'
 			if(x.p.key==x.p.p.left.key):		#goes here if x's parent is a left child
 				y=x.p.p.right
 
-				if(y.color=='r'):			#recolor if the uncle of x is red
+				if((y is not None) and (y.color=='r')):			#recolor if the uncle of x is red
 					print 'case 1'
 					x.p.color='b'
 					y.color='b'
@@ -75,7 +95,7 @@ class RedBlackTree:
 					self._left_rotate(x)
 
 				else:						#rotate and recolor x's grandparent if path to it is in a straight line
-					print 'case 2'
+					print 'case 3'
 					x.p.color='b'			
 					x.p.p.color='r'		
 					self._right_rotate(x.p.p)
@@ -83,7 +103,7 @@ class RedBlackTree:
 			else:	#goes here if x's parent is a right child. same as if clause but left and right are switched
 				y=x.p.p.right
 
-				if(y.color=='r'):
+				if((y is not None) and (y.color=='r')):
 					print 'case 1'
 					x.p.color='b'
 					y.color='b'
