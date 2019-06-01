@@ -14,21 +14,23 @@ class RedBlackTree:
 
 		if(self.root is None):
 			return 'tree is empty'
-		return self._to_string(self.root, s='')
+		return self._to_string(self.root)
 
-	def _to_string(self, vertex, s):
+	def _to_string(self, vertex):
 		if(vertex is None):
 			return ''
-		s+=vertex.color+str(vertex.key)
+		s=vertex.color+str(vertex.key)
 		s+='('
-		s+=self._to_string(vertex.left,s)
+		if(vertex.left is not None):
+			s+=self._to_string(vertex.left)
 		s+=')'
 		s+='{'
-		s+=self._to_string(vertex.right,s)
+		if(vertex.right is not None):
+			s+=self._to_string(vertex.right)
 		s+='}'
 		return s
 
-			#insert generic binary tree insert
+	#insert generic binary tree insert
 	def _insert(self, z):
 		y=None						#parent of current point
 		x=self.root					#point of insertion
