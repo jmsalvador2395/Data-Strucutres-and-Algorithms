@@ -30,7 +30,7 @@ class RedBlackTree:
 		s+='}'
 		return s
 
-	#insert generic binary tree insert
+	#generic binary tree insert
 	def _insert(self, z):
 		y=None						#parent of current point
 		x=self.root					#point of insertion
@@ -61,7 +61,7 @@ class RedBlackTree:
 		x.color='r'
 		while((x.key != self.root.key) and (x.p.color=='r')):
 			print 'gets into the while loop'
-			if(x.p.key==x.p.p.left.key):		#goes here if x's parent is a left child
+			if((x.p.p.left is not None) and (x.p.key==x.p.p.left.key)):		#goes here if x's parent is a left child
 				y=x.p.p.right
 
 				if((y is not None) and (y.color=='r')):			#recolor if the uncle of x is red
@@ -70,7 +70,7 @@ class RedBlackTree:
 					y.color='b'
 					x.p.p.color='r'
 
-				elif(x.key==x.p.right.key):	#rotate x's parent if path to grandparent is a triangle
+				elif((x.p.right is not None) and (x.key==x.p.right.key)):	#rotate x's parent if path to grandparent is a triangle
 					print 'case 2'
 					x=x.p
 					self._left_rotate(x)
@@ -90,7 +90,7 @@ class RedBlackTree:
 					y.color='b'
 					x.p.p.color='r'
 
-				elif(x.key==x.p.right.key):
+				elif((x.p.right is not None) and (x.key==x.p.right.key)):
 					print 'case 2'
 					x=x.p
 					self._right_rotate(x)
