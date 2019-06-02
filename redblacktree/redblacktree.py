@@ -69,37 +69,39 @@ class RedBlackTree:
 					x.p.color='b'
 					y.color='b'
 					x.p.p.color='r'
+					x=x.p.p
 
 				elif((x.p.right is not None) and (x.key==x.p.right.key)):	#rotate x's parent if path to grandparent is a triangle
 					print 'case 2'
 					x=x.p
-					self._left_rotate(x)
+					x=self._left_rotate(x)
 
 				else:						#rotate and recolor x's grandparent if path to it is in a straight line
 					print 'case 3'
 					x.p.color='b'			
 					x.p.p.color='r'		
-					self._right_rotate(x.p.p)
+					x=self._right_rotate(x.p.p)
 
 			else:	#goes here if x's parent is a right child. same as if clause but left and right are switched
-				y=x.p.p.right
+				y=x.p.p.left
 
 				if((y is not None) and (y.color=='r')):
 					print 'case 1'
 					x.p.color='b'
 					y.color='b'
 					x.p.p.color='r'
+					x=x.p.p
 
-				elif((x.p.right is not None) and (x.key==x.p.right.key)):
+				elif((x.p.left is not None) and (x.key==x.p.left.key)):
 					print 'case 2'
 					x=x.p
-					self._right_rotate(x)
+					x=self._right_rotate(x)
 
 				else:					
 					print 'case 3'
 					x.p.color='b'			
 					x.p.p.color='r'		
-					self._right_rotate(x.p.p)
+					x=self._left_rotate(x.p.p)
 			
 		self.root.color='b'
 
@@ -125,7 +127,7 @@ class RedBlackTree:
 			x.p.right=y
 		y.left=x
 		x.p=y
-		return
+		return x
 	
 	def _right_rotate(self, y):
 		print 'right rotate'
@@ -142,5 +144,5 @@ class RedBlackTree:
 			y.p.right=x
 		x.right=y
 		y.p=x
-		return
+		return x
 
