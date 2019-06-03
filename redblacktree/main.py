@@ -13,7 +13,7 @@ def main():
 	for i in inp:
 		print 'insert ' + str(i)
 		rbt.rb_insert(i)
-		print rbt
+		print 'resulting tree: ' + rbt.__str__()
 		print ''
 	
 if __name__ == '__main__':
