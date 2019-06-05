@@ -108,10 +108,6 @@ class RedBlackTree:
 	def _black_height(self):
 		return
 			
-	#need to implement
-	def delete(self, key):
-		return
-		
 	def _left_rotate(self, x):
 		y=x.right					#make ptr to right child
 		x.right=y.left				#change right child of x
@@ -144,3 +140,44 @@ class RedBlackTree:
 		y.p=x
 		return x
 
+	def _rb_transplant(self, u, v):
+		if(u.p == None):
+			self.root=v
+		elif((u.p.left is not None) and (u==u.p.left)):
+			u.p.left=v
+		else:
+			u.p.right=v
+		v.p=u.p
+		return v
+	
+	def _tree_minimum(self, x):
+		while(x.left!=None):
+			x=x.left
+		return x
+
+	def rb_delete(self, z):
+		y=z
+		y_original_color=y.color
+		if(z.left==None):
+			self._rb_transplant(z, z.right)
+		elif(z.right==None):
+			x=z.left
+			self._rb_transplant(z, z.left)
+		else:
+			y=self._tree_minimum(self.right)
+			y_original_color=y.color
+			x=y.right
+			if(y.p==z):
+				x.p=y
+			else:
+				y=self._rb_transplant(y, y.right) #may not have to set y like this
+				y.right=z.right
+				y.right.p=y
+			y=self_rb_transplant(z, y)	#may not have to set y like this
+			y.left=z.left
+			y.left.p=y
+			y.color=z.color
+		if(y_original_color=='b'):
+			_rb_delete_fixup(x)
+	def _rb_delete_fixup(self, x):
+		return
