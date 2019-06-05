@@ -179,5 +179,47 @@ class RedBlackTree:
 			y.color=z.color
 		if(y_original_color=='b'):
 			_rb_delete_fixup(x)
+
 	def _rb_delete_fixup(self, x):
+		while x.data!=root.data and x.color=='b':
+			if x==x.p.left:
+				w=x.p.right
+				if w.color == 'r'
+					w.color='b'
+					x.p.color='r'
+					self._left_rotate(x.p)
+					w=x.p.right
+				if w.left.color == 'b' and w.right.color == 'b':
+					w.color='r'
+					x=x.p
+				elif w.right.color == 'b':
+					w.left.color = 'b'
+					w.color='r'
+					self._right_rotate(w)
+					w=x.p.right
+				w.color=x.p.color
+				x.p.color='b'
+				self._left_rotate(x.p)
+				x=self.root
+			else:
+				if x==x.p.right:
+					w=x.p.left
+					if w.color == 'r'
+						w.color='b'
+						x.p.color='r'
+						self._right_rotate(x.p)
+						w=x.p.left
+					if w.right.color == 'b' and w.left.color == 'b':
+						w.color='r'
+						x=x.p
+					elif w.left.color == 'b':
+						w.right.color = 'b'
+						w.color='r'
+						self._left_rotate(w)
+						w=x.p.left
+					w.color=x.p.color
+					x.p.color='b'
+					self._right_rotate(x.p)
+					x=self.root
+
 		return
