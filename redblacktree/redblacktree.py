@@ -143,7 +143,7 @@ class RedBlackTree:
 	def _rb_transplant(self, u, v):
 		if(u.p == None):
 			self.root=v
-		elif((u.p.left is not None) and (u==u.p.left)):
+		elif((u.p.left is not None) and (u.data==u.p.left.data)):
 			u.p.left=v
 		else:
 			u.p.right=v
