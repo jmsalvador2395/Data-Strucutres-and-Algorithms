@@ -16,6 +16,9 @@ class Heap{
 		void build_max_heap(); //line
 		void build_min_heap(); //line
 		void heapsort(); //line
+		void reverse_heapsort(); //line
+		T max();
+		T extract_max();
 	private:
 		int length, size;
 		T *arr;
@@ -88,6 +91,7 @@ void Heap<T>::max_heapify(int i){
 	int largest;
 	int l=this->left(i);
 	int r=this->right(i);
+
 	//book calls for l<=size 
 	if(l<this->size && this->arr[l]>arr[i]){
 		largest=l;
@@ -95,29 +99,74 @@ void Heap<T>::max_heapify(int i){
 	else{
 		largest=i;
 	}
+
 	//book calls for r<=size
 	if(r<this->size && arr[r]>arr[largest]){
 		largest=r;
 	}
+
 	if(largest!=i){
 		T temp=arr[i];
 		arr[i]=arr[largest];
 		arr[largest]=temp;
 		this->max_heapify(largest);
 	}
+	else{
+		return;
+	}
 }
 
+template<typename T>
+void Heap<T>::min_heapify(int i){
+	int smallest;
+	int l=this->left(i);
+	int r=this->right(i);
+
+	//book calls for l<=size 
+	if(l<this->size && this->arr[l]<arr[i]){
+		smallest=l;
+	}
+	else{
+		smallest=i;
+	}
+
+	//book calls for r<=size
+	if(r<this->size && arr[r]<arr[smallest]){
+		smallest=r;
+	}
+
+	if(smallest!=i){
+		T temp=arr[i];
+		arr[i]=arr[smallest];
+		arr[smallest]=temp;
+		this->min_heapify(smallest);
+	}
+	else{
+		return;
+	}
+
+}
 //indeces are different from the book because the book's arrays start at index 1 and not 0
 template<typename T>
 void Heap<T>::build_max_heap(){
 	this->size=this->length;
+
 	for(int i=length/2; i>=0; i--)
 		this->max_heapify(i);
 }
 
 template<typename T>
+void Heap<T>::build_min_heap(){
+	this->size=this->length;
+
+	for(int i=length/2; i>=0; i--)
+		this->min_heapify(i);
+}
+
+template<typename T>
 void Heap<T>::heapsort(){
 	this->build_max_heap();
+	
 	//book asks to loop until you get to index 2 but in our case it's index 1
 	for(int i=this->length-1; i>=1; i--){
 		T temp=arr[0];
@@ -126,4 +175,34 @@ void Heap<T>::heapsort(){
 		this->size--;
 		this->max_heapify(0);
 	}
+}
+
+template<typename T>
+void Heap<T>::reverse_heapsort(){
+	this->build_min_heap();
+
+	for(int i=this->length-1; i>=1; i--){
+		T temp=arr[0];
+		arr[0]=arr[i];
+		arr[i]=temp;
+		this->size--;
+		this->min_heapify(0);
+	}
+}
+
+//only use this after running max_heapify()
+template<typename T>
+T Heap<T>::max(){
+	return this->arr[0];
+}
+
+//returns the largest value and deletes it from the heap. returns NULL if the heap is empty
+template<typename T>
+T Heap<T>::extract_max(){
+	if(this->size<1)
+		return NULL;
+	int max=arr[0];
+	arr[0]=this->arr[size-1];
+	this->size--;
+	return max;
 }
