@@ -18,7 +18,9 @@ class Heap{
 		void heapsort(); //line
 		void reverse_heapsort(); //line
 		T max();
+		T min();
 		T extract_max();
+		T extract_min();
 	private:
 		int length, size;
 		T *arr;
@@ -59,7 +61,7 @@ Heap<T>::~Heap(){
 	delete[] arr;
 }
 
-//give direct access to the internal array
+//give direct access to the internal array. mostly just using this for debugging
 template<typename T>
 T &Heap<T>::operator[](int index){
 	return arr[index];
@@ -196,13 +198,33 @@ T Heap<T>::max(){
 	return this->arr[0];
 }
 
-//returns the largest value and deletes it from the heap. returns NULL if the heap is empty
+//only use this after running min_heapify()
+template<typename T>
+T Heap<T>::min(){
+	return this->arr[0];
+}
+
+//returns the largest value and deletes it from the max heap. returns NULL if the heap is empty
 template<typename T>
 T Heap<T>::extract_max(){
 	if(this->size<1)
-		return NULL;
+		throw "heap underflow";
 	int max=arr[0];
 	arr[0]=this->arr[size-1];
 	this->size--;
+	this->max_heapify(0);
 	return max;
 }
+
+template<typename T>
+T Heap<T>::extract_min(){
+	if(this->size<1)
+		throw "heap underflow";
+	int min=arr[0];
+	arr[0]=this->arr[size-1];
+	this->size--;
+	this->min_heapify(0);
+	return min;
+}
+
+
