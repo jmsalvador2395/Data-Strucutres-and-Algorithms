@@ -11,6 +11,7 @@ class Heap{
 		int parent(int i); //line 65
 		int left(int i); //line 72
 		int right(int i); //line 79
+		int get_size();
 		void max_heapify(int i); //line
 		void min_heapify(int i); //line
 		void build_max_heap(); //line
@@ -87,6 +88,10 @@ int Heap<T>::right(int i){
 	return i*2+2;
 }
 
+template<typename T>
+int Heap<T>::get_size(){
+	return this->size;
+}
 //indeces are slightly different from the book
 template<typename T>
 void Heap<T>::max_heapify(int i){

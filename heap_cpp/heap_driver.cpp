@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "heap.h"
 
+template<typename T>
+void print_int_heap(Heap<T> heap){
+	
+}
 int main(int argc, char **argv){
 	int arr[10];
 	for(int i=0; i<10; i++)
@@ -16,7 +20,7 @@ int main(int argc, char **argv){
 	//heap.heapsort();
 	//heap.build_min_heap();
 	//heap.reverse_heapsort();
-	for(int i=0; i<10; i++)
+	for(int i=0; i<heap.get_size(); i++)
 		printf("%d ", heap[i]);
 	printf("\n");
 	
