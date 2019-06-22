@@ -16,6 +16,7 @@ class PriorityQueue{
 	private:
 		class QueueContainer{
 			public:
+				QueueContainer();
 				QueueContainer(int key, T value);
 				const bool operator<(const QueueContainer& other);
 				const bool operator>(const QueueContainer& other);
@@ -38,8 +39,7 @@ class PriorityQueue{
 		void max_heapify(int i); 
 		void min_heapify(int i);
 		void build_max_heap();
-		void build_min_heap();
-		void maxq_increase_key(int i, int key);
+		void build_min_heap(); void maxq_increase_key(int i, int key);
 		void minq_decrease_key(int i, int key);
 
 		QueueContainer* heap;
@@ -47,6 +47,10 @@ class PriorityQueue{
 
 };
 #endif
+
+//this is just for initialization of the array
+template<typename T>
+PriorityQueue<T>::QueueContainer::QueueContainer(){}
 
 template<typename T>
 PriorityQueue<T>::QueueContainer::QueueContainer(int key, T value){
@@ -99,13 +103,13 @@ template<typename T>
 PriorityQueue<T>::PriorityQueue(){
 	this->heap_size=0;
 	this->heap_length=10;
-	heap=new QueueContainer[heap_length];
+	heap=new QueueContainer[this->heap_length];
 }
 
 template<typename T>
 PriorityQueue<T>::PriorityQueue(int length){
-	this->size=0;
-	this->length=length;
+	this->heap_size=0;
+	this->heap_length=length;
 	heap=new QueueContainer[length];
 }
 
@@ -132,7 +136,8 @@ void PriorityQueue<T>::insert(int key, T value){
 	if(heap_size+1>heap_length)
 		throw "heap overflow"; //will write code to double the heap size in the future
 	this->heap_size++;
-	heap[this-heap_size-1]=new QueueContainer(-1, value);
+	heap[this->heap_size-1].set_key(-1);
+	heap[this->heap_size-1].set_value(value);
 	this->maxq_increase_key(this->heap_size-1, key);
 }
 
@@ -233,7 +238,7 @@ void PriorityQueue<T>::maxq_increase_key(int i, int key){
 		throw "key is not bigger than the original";
 	heap[i].set_key(key);
 	while(i>=0 && heap[this->parent(i)]>heap[i]){
-		PriorityQueue temp=heap[i];
+		QueueContainer temp=heap[i];
 		heap[i]=heap[this->parent(i)];
 		this->heap[parent(i)]=temp;
 		i=this->parent(i);
