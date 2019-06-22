@@ -1,4 +1,6 @@
 #include <string>
+#include <stdio.h>
+
 #ifndef _PRIORITY_QUEUE_H_
 #define _PRIORITY_QUEUE_H_
 template<typename T>
@@ -9,7 +11,7 @@ class PriorityQueue{
 		PriorityQueue(int length, int queue_type);
 		~PriorityQueue();
 		int get_size();
-		T& peek(); //Heap-Max (or min) implemented in the book 
+		T peek(); //Heap-Max (or min) implemented in the book 
 		T& dequeue(); //Heap-Extract-Max (or min) implemented the book
 		void insert(int key, T value); //Max-Heap-Insert (or min) implemented in the book
 
@@ -18,12 +20,13 @@ class PriorityQueue{
 			public:
 				QueueContainer();
 				QueueContainer(int key, T value);
-				const bool operator<(const QueueContainer& other);
-				const bool operator>(const QueueContainer& other);
-				void operator=(const QueueContainer& other);
-				const bool operator==(const QueueContainer& other);
-				const int get_key();
-				const T get_value();
+				bool operator<( QueueContainer& other);
+				bool operator>( QueueContainer& other);
+				void operator=( QueueContainer& other);
+				void operator=( QueueContainer* other);
+				bool operator==( QueueContainer& other);
+				int get_key();
+				T get_value();
 				void set_key(int i);
 				void set_value(T val);
 				
@@ -59,33 +62,39 @@ PriorityQueue<T>::QueueContainer::QueueContainer(int key, T value){
 }
 
 template<typename T>
-const bool PriorityQueue<T>::QueueContainer::operator<(const QueueContainer& other){
+bool PriorityQueue<T>::QueueContainer::operator<( QueueContainer& other){
 	return (this->key > other.key);
 }
 
 template<typename T>
-const bool PriorityQueue<T>::QueueContainer::operator>(const QueueContainer& other){
+bool PriorityQueue<T>::QueueContainer::operator>( QueueContainer& other){
 	return (this->key < other.key);
 }
 
 template<typename T>
-void PriorityQueue<T>::QueueContainer::operator=(const QueueContainer& other){
+void PriorityQueue<T>::QueueContainer::operator=( QueueContainer& other){
 	this->key=other.get_key();
 	this->value=other.get_value();
 }
 
 template<typename T>
-const bool PriorityQueue<T>::QueueContainer::operator==(const QueueContainer& other){
+void PriorityQueue<T>::QueueContainer::operator=( QueueContainer* other){
+	this->key=other->get_key();
+	this->value=other->get_value();
+}
+
+template<typename T>
+bool PriorityQueue<T>::QueueContainer::operator==( QueueContainer& other){
 	return (this->key == other.key);
 }
 
 template<typename T>
-const int PriorityQueue<T>::QueueContainer::get_key(){
+int PriorityQueue<T>::QueueContainer::get_key(){
 	return this->key;
 }
 
 template<typename T>
-const T PriorityQueue<T>::QueueContainer::get_value(){
+T PriorityQueue<T>::QueueContainer::get_value(){
 	return this->value;
 }
 
@@ -124,10 +133,11 @@ int PriorityQueue<T>::get_size(){
 }
 
 template<typename T>
-T& PriorityQueue<T>::peek(){
+T PriorityQueue<T>::peek(){
 	if(this->heap_size==0)
 		throw "queue is empty";
-	return heap[0];
+	printf("%d\n", heap[0].get_value());
+	return heap[0].get_value();
 }
 
 //book says to insert at heap_size but their indeces also start at 1 so we instead insert at heap_size-1
@@ -136,8 +146,11 @@ void PriorityQueue<T>::insert(int key, T value){
 	if(heap_size+1>heap_length)
 		throw "heap overflow"; //will write code to double the heap size in the future
 	this->heap_size++;
+	heap[this->heap_size-1]=new QueueContainer(-1, value);
+	/*
 	heap[this->heap_size-1].set_key(-1);
 	heap[this->heap_size-1].set_value(value);
+	*/
 	this->maxq_increase_key(this->heap_size-1, key);
 }
 
