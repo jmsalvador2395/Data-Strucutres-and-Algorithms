@@ -64,7 +64,7 @@ Heap<T>::~Heap(){
 
 //give direct access to the internal array. mostly just using this for debugging
 template<typename T>
-T &Heap<T>::operator[](int index){
+T& Heap<T>::operator[](int index){
 	return arr[index];
 }
 
