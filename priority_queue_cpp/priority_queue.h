@@ -1,5 +1,6 @@
-#include <string>
 #include <stdio.h>
+#include <string>
+#include <exception>
 
 #ifndef _PRIORITY_QUEUE_H_
 #define _PRIORITY_QUEUE_H_
@@ -11,7 +12,8 @@ class PriorityQueue{
 		PriorityQueue(int length, int queue_type);
 		~PriorityQueue();
 		int get_size();
-		T peek(); //Heap-Max (or min) implemented in the book 
+		T peek_value(); //Heap-Max (or min) implemented in the book 
+		int peek_key(); // like peek_value but grabs the key instead
 		T& dequeue(); //Heap-Extract-Max (or min) implemented the book
 		void insert(int key, T value); //Max-Heap-Insert (or min) implemented in the book
 
@@ -133,24 +135,44 @@ int PriorityQueue<T>::get_size(){
 }
 
 template<typename T>
-T PriorityQueue<T>::peek(){
-	if(this->heap_size==0)
-		throw "queue is empty";
-	printf("%d\n", heap[0].get_value());
+T PriorityQueue<T>::peek_value(){
+	try{
+		if(this->heap_size==0)
+			throw "Error from function peek(): queue is empty";
+	}
+	catch(const char* e){
+		printf("%s\n", e);
+	}
 	return heap[0].get_value();
 }
 
+template<typename T>
+int PriorityQueue<T>::peek_key(){
+	try{
+		if(this->heap_size==0)
+			throw "Error from function peek(): queue is empty";
+	}
+	catch(const char* e){
+		printf("%s\n", e);
+	}
+	return heap[0].get_key();
+
+}
 //book says to insert at heap_size but their indeces also start at 1 so we instead insert at heap_size-1
 template<typename T>
 void PriorityQueue<T>::insert(int key, T value){
-	if(heap_size+1>heap_length)
-		throw "heap overflow"; //will write code to double the heap size in the future
+	try{
+		if(heap_size+1>heap_length){
+			throw "Error from function insert(): heap overflow"; //will write code to double the heap size in the future
+		}
+	}
+	catch(const char* e){
+		printf("%s\n", e);
+	}
 	this->heap_size++;
-	heap[this->heap_size-1]=new QueueContainer(-1, value);
-	/*
+	//heap[this->heap_size-1]=new QueueContainer(-1, value);
 	heap[this->heap_size-1].set_key(-1);
 	heap[this->heap_size-1].set_value(value);
-	*/
 	this->maxq_increase_key(this->heap_size-1, key);
 }
 
@@ -247,8 +269,15 @@ void PriorityQueue<T>::build_min_heap(){
 
 template<typename T>
 void PriorityQueue<T>::maxq_increase_key(int i, int key){
-	if(heap[i].get_key()<=i)
-		throw "key is not bigger than the original";
+	try{
+		if(i<=heap[i].get_key())
+			throw "Error from function maxq_increase_key(): key is not bigger than the original";
+	}
+	catch(const char* e){
+		printf("hi\n");
+		printf("%s\n", e);
+	}
+
 	heap[i].set_key(key);
 	while(i>=0 && heap[this->parent(i)]>heap[i]){
 		QueueContainer temp=heap[i];

@@ -6,7 +6,9 @@ int main(int argc, char** argv){
 	PriorityQueue<int> q(20);
 	for(int i=0; i<10; i++)
 		q.insert(i, i);
-	int x=q.peek();
-	printf("%d\n", x);
+	q.insert(20, -5);
+	int x=q.peek_key();
+	int y=q.peek_value();
+	printf("%d %d\n", x, y);
 	return 0;
 }
