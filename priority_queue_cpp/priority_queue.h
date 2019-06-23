@@ -19,7 +19,7 @@ class PriorityQueue{
 		int peek_key(); // like peek_value but grabs the key instead
 		T pop(); //Heap-Extract-Max (or min) implemented the book
 		void insert(int key, T value); //Max-Heap-Insert (or min) implemented in the book
-		std::string str();
+		std::string str(); //only works when the queue is using basic data types because i insert T (generic object) into the string stream.
 
 	private:
 		class QueueContainer{
@@ -47,8 +47,8 @@ class PriorityQueue{
 		int right(int i);
 		void max_heapify(int i); 
 		void min_heapify(int i);
-		void build_max_heap();
-		void build_min_heap();
+		void build_max_heap(); //not using this now but maybe i'll add the functionality to construct a priority queue from an array of elements at once
+		void build_min_heap(); //not using this now but maybe i'll add the functionality to construct a priority queue from an array of elements at once
 		void maxq_increase_key(int i, int key);
 		void minq_decrease_key(int i, int key);
 
