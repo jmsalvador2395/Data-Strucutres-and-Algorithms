@@ -3,14 +3,16 @@
 #include <sstream>
 #include <exception>
 
+#define MAX_INT_SIZE 0xFFFF
+
 #ifndef _PRIORITY_QUEUE_H_
 #define _PRIORITY_QUEUE_H_
 template<typename T>
 class PriorityQueue{
 	public:
-		PriorityQueue(); //sets a default heapay size of 10
-		PriorityQueue(int length);  //set your own heapay size with default as a max priority queue
-		PriorityQueue(int length, int queue_type);
+		PriorityQueue(); //sets a default heap size of 10
+		PriorityQueue(int length);  //set your own heap size with default as a max priority queue
+		PriorityQueue(int length, char queue_type); //explicitly set heap size and queue type. 'M' for max and 'm' for min
 		~PriorityQueue();
 		int get_size();
 		T peek_value(); //Heap-Max (or min) implemented in the book 
@@ -46,11 +48,13 @@ class PriorityQueue{
 		void max_heapify(int i); 
 		void min_heapify(int i);
 		void build_max_heap();
-		void build_min_heap(); void maxq_increase_key(int i, int key);
+		void build_min_heap();
+		void maxq_increase_key(int i, int key);
 		void minq_decrease_key(int i, int key);
 
 		QueueContainer* heap;
 		int heap_size, heap_length;
+		char queue_type; //M for max, m for min
 
 };
 #endif
@@ -117,6 +121,7 @@ PriorityQueue<T>::PriorityQueue(){
 	this->heap_size=0;
 	this->heap_length=10;
 	heap=new QueueContainer[this->heap_length];
+	this->queue_type='M';
 }
 
 template<typename T>
@@ -124,8 +129,16 @@ PriorityQueue<T>::PriorityQueue(int length){
 	this->heap_size=0;
 	this->heap_length=length;
 	heap=new QueueContainer[length];
+	this->queue_type='M';
 }
 
+template<typename T>
+PriorityQueue<T>::PriorityQueue(int length, char queue_type){
+	this->heap_size=0;
+	this->heap_length=length;
+	heap=new QueueContainer[length];
+	this->queue_type=queue_type;
+}
 template<typename T>
 PriorityQueue<T>::~PriorityQueue(){
 	delete[] this->heap;
@@ -166,7 +179,10 @@ T PriorityQueue<T>::pop(){
 	T max=heap[0].get_value();
 	heap[0]=heap[this->heap_size-1];
 	this->heap_size--;
-	this->max_heapify(0);
+	if(this->queue_type=='M')
+		this->max_heapify(0);
+	else
+		this->min_heapify(0);
 	return max;
 }
 //book says to insert at heap_size but their indeces also start at 1 so we instead insert at heap_size-1
@@ -181,10 +197,16 @@ void PriorityQueue<T>::insert(int key, T value){
 		printf("%s\n", e);
 	}
 	this->heap_size++;
-	//heap[this->heap_size-1]=new QueueContainer(-1, value);
-	heap[this->heap_size-1].set_key(-1);
-	heap[this->heap_size-1].set_value(value);
-	this->maxq_increase_key(this->heap_size-1, key);
+	if(this->queue_type=='M'){
+		heap[this->heap_size-1].set_key(-1);
+		heap[this->heap_size-1].set_value(value);
+		this->maxq_increase_key(this->heap_size-1, key);
+	}
+	else{ //goes here if it's a min queue
+		heap[this->heap_size-1].set_key(MAX_INT_SIZE);
+		heap[this->heap_size-1].set_value(value);
+		this->minq_decrease_key(this->heap_size-1, key);
+	}
 }
 
 //only works on basic data types
@@ -290,6 +312,7 @@ void PriorityQueue<T>::build_min_heap(){
 		this->min_heapify(i);
 }
 
+//updates the key of the node at index i and percolates the node upwards to correct the max heap
 template<typename T>
 void PriorityQueue<T>::maxq_increase_key(int i, int key){
 	try{
@@ -297,7 +320,6 @@ void PriorityQueue<T>::maxq_increase_key(int i, int key){
 			throw "Error from function maxq_increase_key(): key is not bigger than the original";
 	}
 	catch(const char* e){
-		printf("hi\n");
 		printf("%s\n", e);
 	}
 
@@ -309,3 +331,23 @@ void PriorityQueue<T>::maxq_increase_key(int i, int key){
 		i=this->parent(i);
 	}
 }
+
+template<typename T>
+void PriorityQueue<T>::minq_decrease_key(int i, int key){
+	try{
+		if(i>=heap[i].get_key())
+			throw "Error from function maxq_increase_key(): key is not smaller than the original";
+	}
+	catch(const char* e){
+		printf("%s\n", e);
+	}
+
+	heap[i].set_key(key);
+	while(i>=0 && heap[this->parent(i)]>heap[i]){
+		QueueContainer temp=heap[i];
+		heap[i]=heap[this->parent(i)];
+		this->heap[parent(i)]=temp;
+		i=this->parent(i);
+	}
+}
+

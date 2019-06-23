@@ -5,7 +5,7 @@
 #include "priority_queue.h"
 
 int main(int argc, char** argv){
-	PriorityQueue<int> q(20);
+	PriorityQueue<int> q(20, 'm');
 	for(int i=0; i<10; i++)
 		q.insert(i, i);
 	q.insert(20, -5);
