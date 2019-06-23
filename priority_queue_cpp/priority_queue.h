@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <exception>
 
 #ifndef _PRIORITY_QUEUE_H_
@@ -14,8 +15,9 @@ class PriorityQueue{
 		int get_size();
 		T peek_value(); //Heap-Max (or min) implemented in the book 
 		int peek_key(); // like peek_value but grabs the key instead
-		T& dequeue(); //Heap-Extract-Max (or min) implemented the book
+		T pop(); //Heap-Extract-Max (or min) implemented the book
 		void insert(int key, T value); //Max-Heap-Insert (or min) implemented in the book
+		std::string str();
 
 	private:
 		class QueueContainer{
@@ -64,29 +66,29 @@ PriorityQueue<T>::QueueContainer::QueueContainer(int key, T value){
 }
 
 template<typename T>
-bool PriorityQueue<T>::QueueContainer::operator<( QueueContainer& other){
-	return (this->key > other.key);
-}
-
-template<typename T>
-bool PriorityQueue<T>::QueueContainer::operator>( QueueContainer& other){
+bool PriorityQueue<T>::QueueContainer::operator<(QueueContainer& other){
 	return (this->key < other.key);
 }
 
 template<typename T>
-void PriorityQueue<T>::QueueContainer::operator=( QueueContainer& other){
+bool PriorityQueue<T>::QueueContainer::operator>(QueueContainer& other){
+	return (this->key > other.key);
+}
+
+template<typename T>
+void PriorityQueue<T>::QueueContainer::operator=(QueueContainer& other){
 	this->key=other.get_key();
 	this->value=other.get_value();
 }
 
 template<typename T>
-void PriorityQueue<T>::QueueContainer::operator=( QueueContainer* other){
+void PriorityQueue<T>::QueueContainer::operator=(QueueContainer* other){
 	this->key=other->get_key();
 	this->value=other->get_value();
 }
 
 template<typename T>
-bool PriorityQueue<T>::QueueContainer::operator==( QueueContainer& other){
+bool PriorityQueue<T>::QueueContainer::operator==(QueueContainer& other){
 	return (this->key == other.key);
 }
 
@@ -158,6 +160,15 @@ int PriorityQueue<T>::peek_key(){
 	return heap[0].get_key();
 
 }
+
+template<typename T>
+T PriorityQueue<T>::pop(){
+	T max=heap[0].get_value();
+	heap[0]=heap[this->heap_size-1];
+	this->heap_size--;
+	this->max_heapify(0);
+	return max;
+}
 //book says to insert at heap_size but their indeces also start at 1 so we instead insert at heap_size-1
 template<typename T>
 void PriorityQueue<T>::insert(int key, T value){
@@ -174,6 +185,18 @@ void PriorityQueue<T>::insert(int key, T value){
 	heap[this->heap_size-1].set_key(-1);
 	heap[this->heap_size-1].set_value(value);
 	this->maxq_increase_key(this->heap_size-1, key);
+}
+
+//only works on basic data types
+template<typename T>
+std::string PriorityQueue<T>::str(){
+	std::stringstream ss;
+	ss << "[ ";
+	for(int i=0; i<this->heap_size; i++){
+		ss << "(" << heap[i].get_key() << ", " << heap[i].get_value() << ") ";
+	}
+	ss << "]";
+	return ss.str();
 }
 
 template<typename T>
@@ -198,20 +221,20 @@ void PriorityQueue<T>::max_heapify(int i){
 	int r=this->right(i);
 
 	//book calls for l<=size 
-	if(l<this->size && this->heap[l]>heap[i]){
+	if(l<this->heap_size && this->heap[l]>heap[i]){
 		largest=l;
 	}
 	else{
 		largest=i;
 	}
-
-	//book calls for r<=size
-	if(r<this->size && heap[r]>heap[largest]){
+	
+	//book calls for r<=heap_size
+	if(r<this->heap_size && heap[r]>heap[largest]){
 		largest=r;
 	}
 
 	if(largest!=i){
-		T temp=heap[i];
+		QueueContainer temp=heap[i];
 		heap[i]=heap[largest];
 		heap[largest]=temp;
 		this->max_heapify(largest);
@@ -228,21 +251,21 @@ void PriorityQueue<T>::min_heapify(int i){
 	int l=this->left(i);
 	int r=this->right(i);
 
-	//book calls for l<=size 
-	if(l<this->size && this->heap[l]<heap[i]){
+	//book calls for l<=heap_size 
+	if(l<this->heap_size && this->heap[l]<heap[i]){
 		smallest=l;
 	}
 	else{
 		smallest=i;
 	}
 
-	//book calls for r<=size
-	if(r<this->size && heap[r]<heap[smallest]){
+	//book calls for r<=heap_size
+	if(r<this->heap_size && heap[r]<heap[smallest]){
 		smallest=r;
 	}
 
 	if(smallest!=i){
-		T temp=heap[i];
+		QueueContainer temp=heap[i];
 		heap[i]=heap[smallest];
 		heap[smallest]=temp;
 		this->min_heapify(smallest);
@@ -279,7 +302,7 @@ void PriorityQueue<T>::maxq_increase_key(int i, int key){
 	}
 
 	heap[i].set_key(key);
-	while(i>=0 && heap[this->parent(i)]>heap[i]){
+	while(i>=0 && heap[this->parent(i)]<heap[i]){
 		QueueContainer temp=heap[i];
 		heap[i]=heap[this->parent(i)];
 		this->heap[parent(i)]=temp;
