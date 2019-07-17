@@ -147,7 +147,8 @@ class RedBlackTree:
 			u.p.left=v
 		else:
 			u.p.right=v
-		v.p=u.p
+		if(v is not None): #may not need this line
+			v.p=u.p
 		return v
 	
 	def _tree_minimum(self, x):
@@ -158,22 +159,32 @@ class RedBlackTree:
 	def rb_delete(self, z):
 		y=z
 		y_original_color=y.color
+		'''
+		for the if and elif statements we check to see if the node we're
+		deleting has less than 2 children because that makes the transplant 
+		straight forward: just run rb_transplant using the only immediate child.
+		or in the case of no children you're just making the node null
+
+		(still trying to understand what's in the else statement. i'll be making inline comments as i go)
+		'''
 		if(z.left==None):
+			x=z.right
 			self._rb_transplant(z, z.right)
 		elif(z.right==None):
 			x=z.left
 			self._rb_transplant(z, z.left)
 		else:
-			y=self._tree_minimum(self.right)
-			y_original_color=y.color
-			x=y.right
-			if(y.p==z):
-				x.p=y
+			y=self._tree_minimum(self.right) #set up the minimum node of the right tree to be z's successor
+			y_original_color=y.color #keep track of y's original color
+			x=y.right	#keep track of x because it will take y's original place
+			if(y.p==z): #if y, which is the minimum value of z's right tree, is z's child then set x's parent to y
+				x.p=y  #this will probably crash the program if x is null
 			else:
-				y=self._rb_transplant(y, y.right) #may not have to set y like this
-				y.right=z.right
+				self._rb_transplant(y, y.right) # y.right takes y's original place in the tree.
+				y.right=z.right 
 				y.right.p=y
-			y=self_rb_transplant(z, y)	#may not have to set y like this
+
+			self._rb_transplant(z, y)
 			y.left=z.left
 			y.left.p=y
 			y.color=z.color
